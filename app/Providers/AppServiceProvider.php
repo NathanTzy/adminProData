@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\CekRole;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
-
+        Route::aliasMiddleware('cekRole', CekRole::class);
     }
 }

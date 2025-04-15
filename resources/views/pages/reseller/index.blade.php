@@ -10,7 +10,7 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Distributors</h1>
+                <h1>Resellers</h1>
             </div>
 
             <div class="section-body">
@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-12">
                         <div class="card">
-                            <form class="pt-3 pl-3" action="{{ route('distributor.index') }}" method="GET">
+                            <form class="pt-3 pl-3" action="{{ route('reseller.index') }}" method="GET">
                                 <div class="input-group col-3">
                                     <input type="text" class="form-control" placeholder="Search" name="name"
                                         value="{{ request('name') }}">
@@ -42,7 +42,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse ($distributors as $e)
+                                            @forelse ($re as $e)
                                                 <tr>
                                                     <td class="text-center">{{ $loop->iteration }}</td>
                                                     <td class="text-center">{{ $e->nama }}</td>
@@ -50,7 +50,7 @@
                                                     <td class="text-center">{{ $e->alamat }}</td>
                                                     <td>
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <form action="{{ route('distributor.destroy', $e->id) }}"
+                                                            <form action="{{ route('reseller.destroy', $e->id) }}"
                                                                 method="POST"
                                                                 onsubmit="return confirm('Yakin ingin menghapus?');"
                                                                 class="mr-2">
@@ -61,7 +61,7 @@
                                                                     <i class="fa fa-trash"></i> Delete
                                                                 </button>
                                                             </form>
-                                                            <a href="{{ route('distributor.show', $e->id) }}"
+                                                            <a href="{{ route('reseller.show', $e->id) }}"
                                                                 class="mr-2 btn btn-info font-weight-bold">
                                                                 <i class="fa fa-eye"></i> View
                                                             </a>
@@ -76,7 +76,7 @@
                                             @endforelse
                                         </tbody>
                                     </table>
-                                    <a href="{{ route('distributor.create') }}"
+                                    <a href="{{ route('reseller.create') }}"
                                         class="flex btn btn-warning font-weight-bold "><i class="fa fa-plus"></i> Create
                                         user</a>
                                 </div>
@@ -89,9 +89,9 @@
                 </div>
 
             </div>
-            @if ($distributors->total() > $distributors->perPage())
+            @if ($re->total() > $re->perPage())
                 <nav class="d-inline-block">
-                    {{ $distributors->appends(request()->query())->links() }}
+                    {{ $re->appends(request()->query())->links() }}
 
                 </nav>
             @endif

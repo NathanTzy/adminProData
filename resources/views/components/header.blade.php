@@ -14,7 +14,7 @@
                 <img alt="image" src="{{ asset('img/avatar/avatar-1.png') }}" class="mr-1 rounded-circle">
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-title">Nama</div>
+                <div class="dropdown-title">{{ auth()->user()->name }}</div>
                 <a href="features-profile.html" class="dropdown-item has-icon">
                     <i class="far fa-user"></i> Profile
                 </a>

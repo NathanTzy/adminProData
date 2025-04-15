@@ -14,14 +14,14 @@ class ownerSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory()->create([
-        //     'name' => 'Nat',
-        //     'email' => 'nat@example.com',
-        //     'password' => Hash::make('123'),
-        //     'email_verified_at' => now(),
-        //     'role' => 'reseller'
-        // ]);  
+        User::factory()->create([
+            'name' => 'Nat',
+            'email' => 'nat@example.com',
+            'password' => Hash::make('123'),
+            'email_verified_at' => now(),
+            'role' => 'owner'
+        ]);  
 
-        User::factory(10)->create();
+
     }
 }

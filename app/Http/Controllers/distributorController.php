@@ -3,33 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Distributor;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class distributorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $distri = Distributor::all();
 
-        return view('pages.distributors.index', compact('distri'));
+
+    public function index(Request $request)
+    {
+        $query = Distributor::where('user_id', auth()->id());  // Filter berdasarkan user_id yang sedang login
+
+        if ($request->has('name') && $request->name != '') {
+            $query->where('nama', 'like', '%' . $request->name . '%');
+        }
+
+        $distributors = $query->paginate(5);
+
+        return view('pages.distributors.index', compact('distributors'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-
         return view('pages.distributors.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -38,47 +41,52 @@ class distributorController extends Controller
             'alamat' => 'required|string|max:255',
         ]);
 
-
+        // Menambahkan user_id sesuai dengan user yang sedang login
         Distributor::create([
             'nama' => $request->nama,
             'no_telp' => $request->no_telp,
             'alamat' => $request->alamat,
+            'role' => 'distributor',
+            'user_id' => auth()->id(),  // Menyimpan user_id
         ]);
 
         return redirect()->route('distributor.index')->with('success', 'Distributor berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $distributor = Distributor::findOrFail($id);
-        return view('pages.distributors.read', compact('distributor'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $distributor = Distributor::where('user_id', auth()->id())->findOrFail($id); // Hanya edit data milik user yang sedang login
+        return view('pages.distributors.update', compact('distributor'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    public function show(string $id)
+    {
+        $distributor = Distributor::where('user_id', auth()->id())->findOrFail($id);
+
+        return view('pages.distributors.read', compact('distributor'));
+    }
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'no_telp' => 'required|numeric|digits_between:13,15',
+            'alamat' => 'required|string|max:255',
+        ]);
+
+        $distributor = Distributor::where('user_id', auth()->id())->findOrFail($id);  // Hanya update data milik user yang sedang login
+
+        $distributor->update([
+            'nama' => $request->nama,
+            'no_telp' => $request->no_telp,
+            'alamat' => $request->alamat,
+        ]);
+
+        return redirect()->route('distributor.show', $distributor->id)->with('success', 'Data distributor berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $distributor = Distributor::findOrFail($id);
+        $distributor = Distributor::where('user_id', auth()->id())->findOrFail($id);  // Hanya hapus data milik user yang sedang login
         $distributor->delete();
 
         return redirect()->route('distributor.index')->with('success', 'Distributor berhasil dihapus.');

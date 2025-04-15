@@ -10,7 +10,7 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Distributors</h1>
+                <h1>Inventori</h1>
             </div>
 
             <div class="section-body">
@@ -18,16 +18,6 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-12">
                         <div class="card">
-                            <form class="pt-3 pl-3" action="{{ route('distributor.index') }}" method="GET">
-                                <div class="input-group col-3">
-                                    <input type="text" class="form-control" placeholder="Search" name="name"
-                                        value="{{ request('name') }}">
-                                    <div class="pl-3 input-group-btn">
-                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                                    </div>
-                                </div>
-                            </form>
-
                             <div class="card-body">
 
                                 <div class="table-responsive">
@@ -35,22 +25,22 @@
                                         <thead>
                                             <tr class="text-center">
                                                 <th>#</th>
-                                                <th>Name</th>
-                                                <th>No telp</th>
-                                                <th>Alamat</th>
+                                                <th>Nama barang</th>
+                                                <th>Harga satuan</th>
+                                                <th>stok tersisa</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse ($distributors as $e)
+                                            @forelse ($barang as $e)
                                                 <tr>
                                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                                    <td class="text-center">{{ $e->nama }}</td>
-                                                    <td class="text-center">{{ $e->no_telp }}</td>
-                                                    <td class="text-center">{{ $e->alamat }}</td>
+                                                    <td class="text-center">{{ $e->name }}</td>
+                                                    <td class="text-center">{{ 'Rp ' . number_format($e->price, 2, ',', '.') }}</td>
+                                                    <td class="text-center">{{ $e->quantity }}</td>
                                                     <td>
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <form action="{{ route('distributor.destroy', $e->id) }}"
+                                                            <form action="{{ route('barang.destroy', $e->id) }}"
                                                                 method="POST"
                                                                 onsubmit="return confirm('Yakin ingin menghapus?');"
                                                                 class="mr-2">
@@ -61,7 +51,7 @@
                                                                     <i class="fa fa-trash"></i> Delete
                                                                 </button>
                                                             </form>
-                                                            <a href="{{ route('distributor.show', $e->id) }}"
+                                                            <a href="{{ route('barang.show', $e->id) }}"
                                                                 class="mr-2 btn btn-info font-weight-bold">
                                                                 <i class="fa fa-eye"></i> View
                                                             </a>
@@ -70,15 +60,15 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="5" class="text-center">Belum ada distributor terdaftar
+                                                    <td colspan="5" class="text-center">Belum ada barang tersimpan
                                                     </td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
                                     </table>
-                                    <a href="{{ route('distributor.create') }}"
-                                        class="flex btn btn-warning font-weight-bold "><i class="fa fa-plus"></i> Create
-                                        user</a>
+                                    <a href="{{ route('barang.create') }}" class="flex btn btn-warning font-weight-bold "><i
+                                            class="fa fa-plus"></i> Tambahkan
+                                        barang</a>
                                 </div>
 
                             </div>
@@ -89,12 +79,7 @@
                 </div>
 
             </div>
-            @if ($distributors->total() > $distributors->perPage())
-                <nav class="d-inline-block">
-                    {{ $distributors->appends(request()->query())->links() }}
 
-                </nav>
-            @endif
         </section>
     </div>
 @endsection

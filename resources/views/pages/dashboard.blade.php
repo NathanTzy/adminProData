@@ -21,55 +21,7 @@
         </section>
 
         <section>
-            <div class="card">
-                <div class="card-header">
-                    <h4>Registered distributors</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-md">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($distri as $e)
-                                    <tr>
-                                        <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
-                                        <td>{{ $e->nama }}</td>
-                                        <td>
-                                            @if ($e->role == 'Owner')
-                                                <span class="badge badge-warning">{{ $e->role }}</span>
-                                            @elseif ($e->role == 'distributor')
-                                                <span class="badge badge-primary">{{ $e->role }}</span>
-                                            @else
-                                                <span class="badge badge-success">{{ $e->role }}</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-
-                        </table>
-
-                    </div>
-                </div>
-                <div class="text-right card-footer">
-                    <nav class="d-inline-block">
-                        <div class="text-right card-footer">
-                            <nav class="d-inline-block">
-                                {{ $users->links() }}
-                            </nav>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </section>
-    </div>
-@endsection
+         
 
 @push('scripts')
     <!-- JS Libraies -->
