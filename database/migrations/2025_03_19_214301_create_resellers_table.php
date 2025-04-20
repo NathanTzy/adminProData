@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('no_telp', 15);
             $table->string('alamat');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -47,7 +48,6 @@ class UserResellerController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Create the user in the users table
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -55,18 +55,15 @@ class UserResellerController extends Controller
             'role' => 'reseller',
         ]);
 
-        // Create the user reseller record with the created user ID
         UserReseller::create([
             'user_id' => $user->id,
-            'name' => $request->name, // You can store only essential details
+            'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'reseller',
-            // user id
             'user_id' => auth()->id(),
         ]);
 
-        // Redirect to the index with success message
         return redirect()->route('user-reseller.index')->with('success', 'User reseller berhasil ditambahkan');
     }
 
@@ -75,53 +72,47 @@ class UserResellerController extends Controller
      */
     public function edit(string $id)
     {
-        // Fetch the reseller data and ensure it belongs to the current user
         $userReseller = UserReseller::where('user_id', auth()->id())->findOrFail($id);
         return view('pages.user-reseller.edit', compact('userReseller'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => 'string',
+        $validated = $request->validate([
+            'name' => 'string|max:255',
+            'email' => 'email|max:255',
         ]);
 
-        // Fetch the user reseller record
         $userReseller = UserReseller::where('user_id', auth()->id())->findOrFail($id);
+        $user = User::where('email', $userReseller->email)->first();
 
-        // Update the data
-        $userReseller->update([
-            'name' => $request->name,
-        ]);
+        $userReseller->update($validated);
 
-        // Optionally, you can update the associated User data if needed
-        $user = User::findOrFail($userReseller->user_id);
-        $user->update([
-            'name' => $request->name,
-        ]);
+        if ($user) {
+            $user->update($validated);
+        }
 
-        // Redirect back with success message
-        return redirect()->route('user-reseller.index')->with('success', 'User reseller berhasil diperbarui.');
+        return redirect()->route('user-reseller.index')->with('success', 'User updated successfully.');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        // Fetch the user reseller record and delete
         $userReseller = UserReseller::where('user_id', auth()->id())->findOrFail($id);
 
-        // Delete the associated user
-        User::where('id', $userReseller->user_id)->delete();
+        // Hapus data dari tabel users juga
+        $user = User::where('email', $userReseller->email)->first();
+        if ($user) {
+            $user->delete();
+        }
 
-        // Delete the user reseller record
+        // Hapus data user_distributor
         $userReseller->delete();
 
-        // Redirect with success message
-        return redirect()->route('user-reseller.index')->with('success', 'User reseller berhasil dihapus.');
+        return redirect()->route('user.index')->with('success', 'User deleted successfully.');
     }
 }

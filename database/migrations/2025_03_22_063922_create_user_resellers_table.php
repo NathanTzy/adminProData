@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_resellers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('password');
-            $table->string('role');
+            $table->string('role')->default('reseller');
             $table->timestamps();
         });
     }

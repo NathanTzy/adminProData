@@ -63,7 +63,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'distributor',
-            'user_id' => auth()->id(),  // Pastikan user_id sesuai dengan ID user yang sedang login
+            'user_id' => auth()->id(), 
         ]);
 
         return redirect()->route('user.index')->with('success', 'Distributor berhasil ditambahkan');
@@ -84,27 +84,42 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $validated = $request->validate([
-            'name' => 'string|max:255',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'string|max:255',
+        'email' => 'email|max:255',
+    ]);
 
-        $user = UserDistributor::where('user_id', auth()->id())->findOrFail($id);
+    $userDistributor = UserDistributor::where('user_id', auth()->id())->findOrFail($id);
+    $user = User::where('email', $userDistributor->email)->first();
 
+    $userDistributor->update($validated);
+
+    if ($user) {
         $user->update($validated);
-
-        return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }
+
+    return redirect()->route('user.index')->with('success', 'User updated successfully.');
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $user = UserDistributor::where('user_id', auth()->id())->findOrFail($id);
-
-        $user->delete();
-
+        $userDistributor = UserDistributor::where('user_id', auth()->id())->findOrFail($id);
+    
+        // Hapus data dari tabel users juga
+        $user = User::where('email', $userDistributor->email)->first();
+        if ($user) {
+            $user->delete();
+        }
+    
+        // Hapus data user_distributor
+        $userDistributor->delete();
+    
         return redirect()->route('user.index')->with('success', 'User deleted successfully.');
     }
+    
 }
